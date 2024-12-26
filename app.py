@@ -1,37 +1,27 @@
 import streamlit as st
 import requests
 
-# Set up the Streamlit app layout
-st.title("Video Downloader")
-st.write("Enter the URL of the video you'd like to download.")
+# Title of the app
+st.title("Video Viewer")
 
-# User input for the URL
-url = st.text_input("Enter video URL:")
+# Get the URL input from the user
+video_url = st.text_input("Enter Video URL:")
 
-# If the user provides a URL
-if url:
-    # Button to trigger the download
-    if st.button("Download Video"):
-        headers = {
-            "Referer": "https://xhamster19.com"  # You can adjust the Referer as needed
-        }
+# Button to process the URL
+if st.button('Open Video'):
+    # Define headers to simulate the referer
+    headers = {
+        "Referer": "https://xhamster19.com"
+    }
 
-        try:
-            # Sending the GET request
-            response = requests.get(url, headers=headers)
+    # Send GET request to the URL
+    response = requests.get(video_url, headers=headers)
 
-            if response.status_code == 200:
-                # Writing the content to a file
-                with open("video.mp4", "wb") as f:
-                    f.write(response.content)
-                
-                # Notify the user of success
-                st.success("Download successful!")
-                st.write("The video has been saved as 'video.mp4'.")
-
-            else:
-                st.error(f"Failed to download. HTTP Status Code: {response.status_code}")
-
-        except Exception as e:
-            st.error(f"An error occurred: {e}")
-
+    if response.status_code == 200:
+        # If the video is accessible, create an embedded link to open it in a new tab
+        video_stream_url = video_url  # You can directly use the video URL or modify it if needed
+        st.video(video_stream_url)  # Use Streamlit's video player to display the video
+        st.success("Video is ready to view!")
+    else:
+        # Display error message if video is not accessible
+        st.error(f"Failed to retrieve video. Status code: {response.status_code}")
